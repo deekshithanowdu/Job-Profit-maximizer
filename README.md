@@ -41,5 +41,4 @@ Machine Learning predictions
 Database integration
 Cloud deployment
 👨‍💻 Author
-
-Your Name
+DEEKSHITHA NOWDU
