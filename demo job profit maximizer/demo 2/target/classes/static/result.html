@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>AI Dashboard</title>
+    <link rel="stylesheet" href="result.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+
+        <h1>🤖 AI Job Dashboard</h1>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div>💰 Profit: <span id="profit"></span></div>
+            <div>📈 Efficiency: <span id="eff"></span>%</div>
+            <div>❌ Missed Jobs: <span id="missed"></span></div>
+        </div>
+
+        <!-- Jobs -->
+        <h3>✅ Scheduled Jobs</h3>
+        <div id="jobs" class="jobs"></div>
+
+        <!-- AI Recommendations -->
+        <h3>🤖 Recommended Jobs</h3>
+        <div id="recommend" class="jobs"></div>
+
+        <!-- Chart -->
+        <canvas id="chart"></canvas>
+        window.location.href = "result.html";
+        <button onclick="goAnalytics()">📊 View Analytics</button>
+
+    </div>
+</div>
+
+<script>
+    function goBack(){
+    window.location.href="index.html";
+}
+
+function goAnalytics(){
+    window.location.href="analytics.html";
+}
+    window.onload = function() {
+        const data = JSON.parse(localStorage.getItem("jobResult"));
+
+        document.getElementById("profit").innerText = data.profit;
+        document.getElementById("eff").innerText = data.efficiency.toFixed(1);
+        document.getElementById("missed").innerText = data.missedJobs;
+
+        // Scheduled Jobs
+        data.jobs.forEach(j => {
+            let div = document.createElement("div");
+            div.className = "job";
+            div.innerText = j;
+            document.getElementById("jobs").appendChild(div);
+        });
+
+        // Recommendations
+        data.recommendedJobs.forEach(j => {
+            let div = document.createElement("div");
+            div.className = "rec";
+            div.innerText = j;
+            document.getElementById("recommend").appendChild(div);
+        });
+
+        // Chart
+        new Chart(document.getElementById("chart"), {
+            type: "pie",
+            data: {
+                labels: ["Scheduled", "Missed"],
+                datasets: [{
+                    data: [data.jobs.length, data.missedJobs]
+                }]
+            }
+        });
+    };
+</script>
+
+</body>
+</html>

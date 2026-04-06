@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Optimizer</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<center>
+<div id="particles"></div>
+
+<div class="container">
+    <div class="card" id="tiltCard">
+
+        <h1>🚀 Job Optimizer</h1>
+        <p class="tagline">Smart scheduling with real-time analytics</p>
+
+        <!-- Input -->
+        <div class="input-group">
+            <textarea id="input" oninput="previewData()" required></textarea>
+            <label>Enter Jobs (J1,2,100)</label>
+        </div>
+
+        <!-- Live Preview -->
+        <div class="preview">
+            <h3>📊 Live Preview</h3>
+            <div id="jobPreview" class="jobs"></div>
+
+            <div class="stats">
+                💰 Profit: <span id="liveProfit">0</span> |
+                📈 Jobs: <span id="liveCount">0</span>
+            </div>
+
+            <canvas id="previewChart"></canvas>
+        </div>
+
+        <!-- Button -->
+        <button onclick="submitData(event)" class="ripple-btn" id="btn">
+            Compute Schedule
+        </button>
+
+        <div class="loader" id="loader"></div>
+
+    </div>
+</div>
+</center>
+<script>
+    let chart;
+
+// 🔥 LIVE ANALYSIS FUNCTION
+function previewData() {
+    const input = document.getElementById("input").value.trim();
+
+    const lines = input.split("\n").filter(line => line.trim() !== "");
+
+    let totalProfit = 0;
+    let jobCount = 0;
+
+    let labels = [];
+    let profits = [];
+
+    const previewDiv = document.getElementById("jobPreview");
+    previewDiv.innerHTML = "";
+
+    lines.forEach((line, i) => {
+        let parts = line.split(",");
+
+        // ✅ VALIDATION
+        if(parts.length === 3){
+            let id = parts[0].trim();
+            let profit = parseInt(parts[2]);
+
+            if(!isNaN(profit)){
+                totalProfit += profit;
+                jobCount++;
+
+                labels.push(id);
+                profits.push(profit);
+
+                // Create job UI
+                let div = document.createElement("div");
+                div.className = "job-card";
+                div.innerText = `${id} (₹${profit})`;
+                previewDiv.appendChild(div);
+            }
+        }
+    });
+
+    // ✅ UPDATE TEXT
+    document.getElementById("liveProfit").innerText = totalProfit;
+    document.getElementById("liveCount").innerText = jobCount;
+
+    // ✅ FIX: DESTROY OLD CHART
+    if(chart){
+        chart.destroy();
+    }
+
+    // ✅ CREATE NEW CHART
+    chart = new Chart(document.getElementById("previewChart"), {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Profit per Job",
+                data: profits
+            }]
+        },
+        options: {
+            responsive: true,
+            animation: {
+                duration: 800
+            }
+        }
+    });
+}
+    // ================= PARTICLES =================
+    for(let i=0;i<40;i++){
+        let p=document.createElement("div");
+        p.className="particle";
+        p.style.left=Math.random()*100+"%";
+        p.style.animationDuration=5+Math.random()*5+"s";
+        document.getElementById("particles").appendChild(p);
+    }
+
+    // ================= 3D TILT =================
+    const card = document.getElementById("tiltCard");
+    card.addEventListener("mousemove", (e) => {
+        let rect = card.getBoundingClientRect();
+        let x = e.clientX - rect.left;
+        let y = e.clientY - rect.top;
+
+        let rotateX = -(y / rect.height - 0.5) * 10;
+        let rotateY = (x / rect.width - 0.5) * 10;
+
+        card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+
+    card.addEventListener("mouseleave", () => {
+        card.style.transform = "rotateX(0) rotateY(0)";
+    });
+
+    // ================= LIVE PREVIEW =================
+    let chart;
+
+    function previewData() {
+        const input = document.getElementById("input").value.trim();
+        const lines = input.split("\n");
+
+        let jobs = [];
+        let profits = [];
+        let labels = [];
+        let totalProfit = 0;
+
+        document.getElementById("jobPreview").innerHTML = "";
+
+        lines.forEach((line, i) => {
+            let parts = line.split(",");
+            if(parts.length === 3){
+                let id = parts[0].trim();
+                let profit = parseInt(parts[2]);
+
+                jobs.push(id);
+                profits.push(profit);
+                labels.push(id);
+                totalProfit += profit;
+
+                let div = document.createElement("div");
+                div.className = "job-card";
+                div.innerText = `${id} (₹${profit})`;
+                document.getElementById("jobPreview").appendChild(div);
+            }
+        });
+
+        document.getElementById("liveProfit").innerText = totalProfit;
+        document.getElementById("liveCount").innerText = jobs.length;
+
+        // Chart Update
+        if(chart) chart.destroy();
+
+        chart = new Chart(document.getElementById("previewChart"), {
+            type: "bar",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Profit",
+                    data: profits
+                }]
+            },
+            options: {
+                animation: { duration: 800 }
+            }
+        });
+    }
+
+    // ================= SUBMIT =================
+    const API_URL = "https://your-app-name.onrender.com";
+
+    function submitData(e){
+        let btn = document.getElementById("btn");
+
+        // Ripple
+        let ripple = document.createElement("span");
+        ripple.className = "ripple";
+        btn.appendChild(ripple);
+
+        document.getElementById("loader").style.display = "block";
+
+        fetch(`${API_URL}/api/schedule`,{
+            method:"POST",
+            headers:{"Content-Type":"text/plain"},
+            body:document.getElementById("input").value
+        })
+        .then(res=>res.json())
+        .then(data=>{
+            localStorage.setItem("jobResult", JSON.stringify(data));
+            window.location.href = "result.html";
+        });
+    }
+</script>
+
+</body>
+</html>

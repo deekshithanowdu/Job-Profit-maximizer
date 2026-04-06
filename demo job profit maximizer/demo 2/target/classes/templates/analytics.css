@@ -1,0 +1,64 @@
+<style>
+body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:linear-gradient(135deg,#0f2027,#2c5364);
+    color:white;
+}
+
+.container{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.card{
+    background:rgba(255,255,255,0.1);
+    padding:25px;
+    border-radius:20px;
+    width:450px;
+    backdrop-filter:blur(20px);
+    text-align:center;
+}
+
+.stats{
+    margin-bottom:15px;
+}
+
+.jobs{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    justify-content:center;
+}
+
+.job{
+    background:#00c9ff;
+    padding:6px 10px;
+    border-radius:8px;
+}
+
+.rec{
+    background:#ff7a18;
+    padding:6px 10px;
+    border-radius:8px;
+}
+
+.timeline{
+    display:flex;
+    gap:5px;
+    justify-content:center;
+    margin:10px 0;
+}
+
+.time{
+    background:#4facfe;
+    padding:6px;
+    border-radius:5px;
+}
+
+canvas{
+    margin-top:10px;
+}
+<style>

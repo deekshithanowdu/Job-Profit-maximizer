@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>AI Analytics Dashboard</title>
+    <link rel="stylesheet" href="analytics.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <div class="card" id="tiltCard">
+
+        <h1>🤖 AI Analytics Dashboard</h1>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div>💰 Total Profit: <span id="profit"></span></div>
+            <div>📈 Efficiency: <span id="eff"></span>%</div>
+            <div>❌ Missed Jobs: <span id="missed"></span></div>
+        </div>
+
+        <!-- Scheduled Jobs -->
+        <h3>✅ Scheduled Jobs</h3>
+        <div id="jobs" class="jobs"></div>
+
+        <!-- Recommended -->
+        <h3>🤖 AI Recommendations</h3>
+        <div id="recommend" class="jobs"></div>
+
+        <!-- Timeline -->
+        <h3>⏱ Timeline</h3>
+        <div id="timeline" class="timeline"></div>
+
+        <!-- Charts -->
+        <canvas id="pieChart"></canvas>
+        <canvas id="barChart"></canvas>
+
+        <button onclick="goBack()">⬅ Back</button>
+
+    </div>
+</div>
+
+<script>
+    // 3D Tilt
+    const card = document.getElementById("tiltCard");
+    card.addEventListener("mousemove", e => {
+        let rect = card.getBoundingClientRect();
+        let x = e.clientX - rect.left;
+        let y = e.clientY - rect.top;
+
+        card.style.transform =
+            `rotateX(${-(y/rect.height-0.5)*10}deg)
+             rotateY(${(x/rect.width-0.5)*10}deg)`;
+    });
+
+    card.addEventListener("mouseleave",()=>{
+        card.style.transform="rotateX(0) rotateY(0)";
+    });
+
+    // Load Data
+    window.onload = function(){
+        const data = JSON.parse(localStorage.getItem("jobResult"));
+
+        document.getElementById("profit").innerText = data.profit;
+        document.getElementById("eff").innerText = data.efficiency.toFixed(1);
+        document.getElementById("missed").innerText = data.missedJobs;
+
+        // Jobs
+        data.jobs.forEach(j=>{
+            let div=document.createElement("div");
+            div.className="job";
+            div.innerText=j;
+            document.getElementById("jobs").appendChild(div);
+
+            let t=document.createElement("div");
+            t.className="time";
+            t.innerText=j;
+            document.getElementById("timeline").appendChild(t);
+        });
+
+        // Recommendations
+        data.recommendedJobs.forEach(j=>{
+            let div=document.createElement("div");
+            div.className="rec";
+            div.innerText=j;
+            document.getElementById("recommend").appendChild(div);
+        });
+
+        // Pie Chart
+        new Chart(document.getElementById("pieChart"), {
+            type: "pie",
+            data: {
+                labels: ["Scheduled","Missed"],
+                datasets: [{
+                    data: [data.jobs.length, data.missedJobs]
+                }]
+            }
+        });
+
+        // Bar Chart
+        new Chart(document.getElementById("barChart"), {
+            type: "bar",
+            data: {
+                labels: data.jobs,
+                datasets: [{
+                    label: "Jobs",
+                    data: data.jobs.map((_,i)=>i+1)
+                }]
+            }
+        });
+    };
+
+    function goBack(){
+        window.location.href="result.html";
+    }
+</script>
+
+</body>
+</html>

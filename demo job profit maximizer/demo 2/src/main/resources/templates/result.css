@@ -1,0 +1,44 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg,#1f4037,#99f2c8);
+}
+
+.container {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.card {
+    background:white;
+    padding:25px;
+    border-radius:20px;
+    width:420px;
+    text-align:center;
+}
+
+.stats {
+    margin-bottom:15px;
+}
+
+.jobs {
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    justify-content:center;
+}
+
+.job {
+    background:#00c9ff;
+    padding:6px 10px;
+    border-radius:8px;
+    color:white;
+}
+
+.rec {
+    background:#ff7a18;
+    padding:6px 10px;
+    border-radius:8px;
+    color:white;
+}
